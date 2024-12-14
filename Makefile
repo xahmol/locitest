@@ -103,8 +103,8 @@ $(PROGRAM): $(SOURCES:.c=.o) $(LIBRARY)
 
 # Clean old builds and objects
 clean:
-	$(RM) $(SOURCES:.c=.o) $(SOURCES:.c=.d) $(LSOURCES:.c=.o) $(LASOURCES:.s=.o) $(PROGRAM) $(PROGRAM).map $(PROGRAM).brk $(PROGRAM).sym .asm_check
-	cd BUILD; $(RM) *.*
+	$(RM) $(SOURCES:.c=.o) $(SOURCES:.c=.d) $(LSOURCES:.c=.o) $(LASOURCES:.s=.o) $(PROGRAM).map $(PROGRAM).brk $(PROGRAM).sym .asm_check
+#	cd BUILD; $(RM) *.*
 
 # Execute in emulator: use make run
 #run: $(DISK_DSK)
