@@ -1,0 +1,4 @@
+.asm_check:	libsrc/mia.s asminc/loci.inc /home/xahmol/cc65/asminc/errno.inc
+
+libsrc/mia.s asminc/loci.inc /home/xahmol/cc65/asminc/errno.inc:
+
