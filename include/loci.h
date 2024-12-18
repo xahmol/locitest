@@ -29,6 +29,8 @@
 
 #include <stdbool.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/utsname.h>
 
 /* LOCI MIA $03A0-$03BA */
 
@@ -152,6 +154,8 @@ long __fastcall__ mia_call_long_errno (unsigned char op);
 #define MIA_OP_TAP_TELL 0x93
 #define MIA_OP_TAP_HDR 0x94
 
+#define MIA_OP_UNAME 0x98
+
 #define MIA_OP_BOOT 0xA0
 #define MIA_OP_TUNE_TMAP 0xA1
 #define MIA_OP_TUNE_TIOR 0xA2
@@ -189,6 +193,8 @@ void __fastcall__ mia_restore_state(void);
 unsigned char __fastcall__ mia_restore_buffer_ok(void);
 void __fastcall__ mia_clear_restore_buffer(void);
 unsigned char __fastcall__ mia_get_vmode(void);
+
+int __fastcall__ uname (struct utsname* buf);
 
 /* XREG location helpers */
 
@@ -288,5 +294,23 @@ struct LOCICFGSTRUCT {
 extern struct LOCICFGSTRUCT locicfg;
 void get_locicfg();
 const char* get_loci_devname(unsigned char devid,unsigned char maxlength);
+
+// File operations
+#define FM_XRAM_ADDR 0x8000
+#define FM_XRAM_SIZE 0x2000
+
+extern const char progress_str[];
+
+int __fastcall__ file_save(const char *file, const void *src, unsigned int count);
+int __fastcall__ file_load(const char *file, void *dst, unsigned int count);
+int __fastcall__ file_copy(const char *dst, const char *src, unsigned char prog, unsigned char progx,unsigned char progy);
+
+unsigned char __fastcall__ _sysrename (const char* oldpath, const char* newpath);
+unsigned char __fastcall__ _sysremove (const char* name);
+int __fastcall__ _sysuname (struct utsname* buf);
+
+// XRAM MemCopy
+void* __fastcall__ xram_memcpy_to (void* dest, const void* src, size_t count);
+void* __fastcall__ xram_memcpy_from (void* dest, const void* src, size_t count);
 
 #endif /* _LOCI_H */
