@@ -59,7 +59,7 @@ CP        = cp -f
 ## Compiler and linker flags
 CC65_TARGET = atmos
 CFLAGS  = -t $(CC65_TARGET) -Oirs --debug-info -I include --asm-include-dir asminc -I asminc
-LDFLAGS = -t $(CC65_TARGET) -m $(PROJECT).map
+LDFLAGS = -t $(CC65_TARGET) -C locitest-cc65.cfg -m $(PROJECT).map
 
 #CC65 has changed internal library prefix for errno related symbols. Check which one we have.
 CHECK_CC65 != CC65_HOME=$(CC65_HOME) $(CC) -c $(CFLAGS) -o .asm_check libsrc/mia.s 2>&1
