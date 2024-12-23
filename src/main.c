@@ -118,6 +118,24 @@ void main()
     cprintf("Press a key.\n\r");
     cgetc();
 
+    // Memcopy function test
+    clrscr();
+    cprintf("%c%cTesting the Loci API: Overlay RAM\n\r", A_BGGREEN, A_FWBLACK);
+    memset(&buffer2,0,80);
+
+    cprintf("Copy to overlay RAM $C000.\n\r");
+    overlay_memcpy((void*)0xC000, &buffer, 80);
+    cprintf("Reading from overlay RAM.\n\r");
+    overlay_memcpy(&buffer2, (void*)0xC000, 80);
+    cprintf("Printing read numbers:\n\r");
+    for (i = 0; i < 80; i++)
+    {
+        cprintf("%2x", buffer2[i]);
+    }
+
+    cprintf("\n\rPress a key.\n\r");
+    cgetc();
+
     // Clear screen on exit
     setflags(SCREEN);
     clrscr();
