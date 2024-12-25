@@ -75,10 +75,10 @@ struct __LOCI_TAP
 #define TAP (*(volatile struct __LOCI_TAP *)0x0315)
 
 #define TAP_CMD_PLAY 0x01
-#define TAP_CMD_REC  0x02
-#define TAP_CMD_REW  0x03
-#define TAP_CMD_BIT  0x04
-#define TAP_CMD_FFW  0x05
+#define TAP_CMD_REC 0x02
+#define TAP_CMD_REW 0x03
+#define TAP_CMD_BIT 0x04
+#define TAP_CMD_FFW 0x05
 
 typedef struct __TAP_HEADER
 {
@@ -96,30 +96,30 @@ typedef struct __TAP_HEADER
 
 /* XSTACK helpers */
 
-void __fastcall__ mia_push_long (unsigned long val);
-void __fastcall__ mia_push_int (unsigned int val);
+void __fastcall__ mia_push_long(unsigned long val);
+void __fastcall__ mia_push_int(unsigned int val);
 #define mia_push_char(v) MIA.xstack = v
 
-long mia_pop_long (void);
-int mia_pop_int (void);
+long mia_pop_long(void);
+int mia_pop_int(void);
 #define mia_pop_char() MIA.xstack
 
 /* Set the MIA fastcall register */
 
-void __fastcall__ mia_set_axsreg (unsigned long axsreg);
-void __fastcall__ mia_set_ax (unsigned int ax);
+void __fastcall__ mia_set_axsreg(unsigned long axsreg);
+void __fastcall__ mia_set_ax(unsigned int ax);
 #define mia_set_a(v) MIA.a = v
 
 /* Run an OS operation */
 
-int __fastcall__ mia_call_int (unsigned char op);
-long __fastcall__ mia_call_long (unsigned char op);
-void __fastcall__ mia_call_void (unsigned char op);
+int __fastcall__ mia_call_int(unsigned char op);
+long __fastcall__ mia_call_long(unsigned char op);
+void __fastcall__ mia_call_void(unsigned char op);
 
 /* These run _mappederrno() on error */
 
-int __fastcall__ mia_call_int_errno (unsigned char op);
-long __fastcall__ mia_call_long_errno (unsigned char op);
+int __fastcall__ mia_call_int_errno(unsigned char op);
+long __fastcall__ mia_call_long_errno(unsigned char op);
 
 /* OS operation numbers */
 
@@ -148,6 +148,8 @@ long __fastcall__ mia_call_long_errno (unsigned char op);
 #define MIA_OP_CLOSEDIR 0x81
 #define MIA_OP_READDIR 0x82
 
+#define MIA_OP_GETCWD 0x88
+
 #define MIA_OP_MOUNT 0x90
 #define MIA_OP_UMOUNT 0x91
 #define MIA_OP_TAP_SEEK 0x92
@@ -166,42 +168,44 @@ long __fastcall__ mia_call_long_errno (unsigned char op);
 
 /* C API for the operating system. */
 
-int __cdecl__ xreg (char device, char channel, unsigned char address, ...);
-int phi2 (void);
-int codepage (void);
-long lrand (void);
-int __fastcall__ stdin_opt (unsigned long ctrl_bits, unsigned char str_length);
-int __fastcall__ read_xstack (void* buf, unsigned count, int fildes);
-int __fastcall__ read_xram (unsigned buf, unsigned count, int fildes);
-int __fastcall__ write_xstack (const void* buf, unsigned count, int fildes);
-int __fastcall__ write_xram (unsigned buf, unsigned count, int fildes);
+int __cdecl__ xreg(char device, char channel, unsigned char address, ...);
+int phi2(void);
+int codepage(void);
+long lrand(void);
+int __fastcall__ stdin_opt(unsigned long ctrl_bits, unsigned char str_length);
+int __fastcall__ read_xstack(void *buf, unsigned count, int fildes);
+int __fastcall__ read_xram(unsigned buf, unsigned count, int fildes);
+int __fastcall__ write_xstack(const void *buf, unsigned count, int fildes);
+int __fastcall__ write_xram(unsigned buf, unsigned count, int fildes);
 
-int __fastcall__ mount (int drive, register const char* path,register const char* filename);
-int __fastcall__ umount (int drive);
-long __fastcall__ tap_seek (long pos);
-long __fastcall__ tap_tell (void);
-long __fastcall__ tap_read_header (tap_header_t* header);
+void __fastcall__ getcwd_loci(char* buf, unsigned char length);
 
-int __fastcall__ tune_tmap (unsigned char delay);
-int __fastcall__ tune_tior (unsigned char delay);
-int __fastcall__ tune_tiow (unsigned char delay);
-int __fastcall__ tune_tiod (unsigned char delay);
-int __fastcall__ tune_tadr (unsigned char delay);
-void __fastcall__ tune_scan_enable (void);
+int __fastcall__ mount(int drive, register const char *path, register const char *filename);
+int __fastcall__ umount(int drive);
+long __fastcall__ tap_seek(long pos);
+long __fastcall__ tap_tell(void);
+long __fastcall__ tap_read_header(tap_header_t *header);
+
+int __fastcall__ tune_tmap(unsigned char delay);
+int __fastcall__ tune_tior(unsigned char delay);
+int __fastcall__ tune_tiow(unsigned char delay);
+int __fastcall__ tune_tiod(unsigned char delay);
+int __fastcall__ tune_tadr(unsigned char delay);
+void __fastcall__ tune_scan_enable(void);
 
 void __fastcall__ mia_restore_state(void);
 unsigned char __fastcall__ mia_restore_buffer_ok(void);
 void __fastcall__ mia_clear_restore_buffer(void);
 unsigned char __fastcall__ mia_get_vmode(void);
 
-int __fastcall__ uname (struct utsname* buf);
+int __fastcall__ uname(struct utsname *buf);
 
 /* XREG location helpers */
 
 #define xreg_mia_keyboard(...) xreg(0, 0, 0, __VA_ARGS__)
 #define xreg_mia_mouse(...) xreg(0, 0, 1, __VA_ARGS__)
-//#define xreg_vga_canvas(...) xreg(1, 0, 0, __VA_ARGS__)
-//#define xreg_vga_mode(...) xreg(1, 0, 1, __VA_ARGS__)
+// #define xreg_vga_canvas(...) xreg(1, 0, 0, __VA_ARGS__)
+// #define xreg_vga_mode(...) xreg(1, 0, 1, __VA_ARGS__)
 
 /* Values in __oserror are the union of these FatFs errors and errno.h */
 
@@ -231,38 +235,40 @@ typedef enum
 
 typedef enum
 {
-    LFS_ERR_OK          = 128 + 0,    // No error
-    LFS_ERR_IO          = 128 + 5,   // Error during device operation
-    LFS_ERR_CORRUPT     = 128 + 84,  // Corrupted
-    LFS_ERR_NOENT       = 128 + 2,   // No directory entry
-    LFS_ERR_EXIST       = 128 + 17,  // Entry already exists
-    LFS_ERR_NOTDIR      = 128 + 20,  // Entry is not a dir
-    LFS_ERR_ISDIR       = 128 + 21,  // Entry is a dir
-    LFS_ERR_NOTEMPTY    = 128 + 39,  // Dir is not empty
-    LFS_ERR_BADF        = 128 + 9,   // Bad file number
-    LFS_ERR_FBIG        = 128 + 27,  // File too large
-    LFS_ERR_INVAL       = 128 + 22,  // Invalid parameter
-    LFS_ERR_NOSPC       = 128 + 28,  // No space left on device
-    LFS_ERR_NOMEM       = 128 + 12,  // No more memory available
-    LFS_ERR_NOATTR      = 128 + 61,  // No data/attr available
-    LFS_ERR_NAMETOOLONG = 128 + 36   // File name too long
+    LFS_ERR_OK = 128 + 0,          // No error
+    LFS_ERR_IO = 128 + 5,          // Error during device operation
+    LFS_ERR_CORRUPT = 128 + 84,    // Corrupted
+    LFS_ERR_NOENT = 128 + 2,       // No directory entry
+    LFS_ERR_EXIST = 128 + 17,      // Entry already exists
+    LFS_ERR_NOTDIR = 128 + 20,     // Entry is not a dir
+    LFS_ERR_ISDIR = 128 + 21,      // Entry is a dir
+    LFS_ERR_NOTEMPTY = 128 + 39,   // Dir is not empty
+    LFS_ERR_BADF = 128 + 9,        // Bad file number
+    LFS_ERR_FBIG = 128 + 27,       // File too large
+    LFS_ERR_INVAL = 128 + 22,      // Invalid parameter
+    LFS_ERR_NOSPC = 128 + 28,      // No space left on device
+    LFS_ERR_NOMEM = 128 + 12,      // No more memory available
+    LFS_ERR_NOATTR = 128 + 61,     // No data/attr available
+    LFS_ERR_NAMETOOLONG = 128 + 36 // File name too long
 } LFS_RESULT;
 
 // Directory structure
-struct DIR {
-    int         fd;             /* File descriptor for directory */
-    unsigned    off;            /* Current byte offset in directory */
-    char        name[256];      /* Name passed to opendir */
+struct DIR
+{
+    int fd;         /* File descriptor for directory */
+    unsigned off;   /* Current byte offset in directory */
+    char name[256]; /* Name passed to opendir */
 };
 typedef struct DIR DIR;
 
 // File attributes bits for directory entry
-#define	DIR_ATTR_RDO	0x01	/* Read only */
-#define DIR_ATTR_SYS    0x04    /* System files (devices) */
-#define DIR_ATTR_DIR	0x10	/* Directory */
+#define DIR_ATTR_RDO 0x01 /* Read only */
+#define DIR_ATTR_SYS 0x04 /* System files (devices) */
+#define DIR_ATTR_DIR 0x10 /* Directory */
 
-//Dir entry structure
-struct dirent {
+// Dir entry structure
+struct dirent
+{
     int d_fd;
     char d_name[64];
     unsigned char d_attrib;
@@ -270,30 +276,31 @@ struct dirent {
     unsigned long d_size;
 };
 
-#define _DE_ISREG(t)    ((t) & DIR_ATTR_DIR == 0)
-#define _DE_ISDIR(t)    ((t) & DIR_ATTR_DIR != 0)
-#define _DE_ISLBL(t)    (0)
-#define _DE_ISLNK(t)    (0)
+#define _DE_ISREG(t) ((t) & DIR_ATTR_DIR == 0)
+#define _DE_ISDIR(t) ((t) & DIR_ATTR_DIR != 0)
+#define _DE_ISLBL(t) (0)
+#define _DE_ISLNK(t) (0)
 
 // Dir functions
-DIR* __fastcall__ opendir (const char* name);
-struct dirent* __fastcall__ readdir (DIR* dir);
-int __fastcall__ closedir (DIR* dir);
-long __fastcall__ telldir (DIR* dir);
-void __fastcall__ seekdir (DIR* dir, long offs);
-void __fastcall__ rewinddir (DIR* dir);
+DIR *__fastcall__ opendir(const char *name);
+struct dirent *__fastcall__ readdir(DIR *dir);
+int __fastcall__ closedir(DIR *dir);
+long __fastcall__ telldir(DIR *dir);
+void __fastcall__ seekdir(DIR *dir, long offs);
+void __fastcall__ rewinddir(DIR *dir);
 
 // Storage config
-#define MAXDEV 9    // Maxium of devices
+#define MAXDEV 9 // Maxium of devices
 
-struct LOCICFGSTRUCT {
+struct LOCICFGSTRUCT
+{
     unsigned char devnr;
     unsigned char validdev[MAXDEV];
     char path[256];
 };
 extern struct LOCICFGSTRUCT locicfg;
 void get_locicfg();
-const char* get_loci_devname(unsigned char devid,unsigned char maxlength);
+const char *get_loci_devname(unsigned char devid, unsigned char maxlength);
 
 // File operations
 #define FM_XRAM_ADDR 0x8000
@@ -303,18 +310,20 @@ extern const char progress_str[];
 
 int __fastcall__ file_save(const char *file, const void *src, unsigned int count);
 int __fastcall__ file_load(const char *file, void *dst, unsigned int count);
-int __fastcall__ file_copy(const char *dst, const char *src, unsigned char prog, unsigned char progx,unsigned char progy);
+int __fastcall__ file_copy(const char *dst, const char *src, unsigned char prog, unsigned char progx, unsigned char progy);
 
-unsigned char __fastcall__ _sysrename (const char* oldpath, const char* newpath);
-unsigned char __fastcall__ _sysremove (const char* name);
-int __fastcall__ _sysuname (struct utsname* buf);
+unsigned char __fastcall__ _sysrename(const char *oldpath, const char *newpath);
+unsigned char __fastcall__ _sysremove(const char *name);
+int __fastcall__ _sysuname(struct utsname *buf);
 
 // XRAM MemCopy
-void* __fastcall__ xram_memcpy_to (void* dest, const void* src, size_t count);
-void* __fastcall__ xram_memcpy_from (void* dest, const void* src, size_t count);
+void *__fastcall__ xram_memcpy_to(void *dest, const void *src, size_t count);
+void *__fastcall__ xram_memcpy_from(void *dest, const void *src, size_t count);
+void *__fastcall__ xram_poke(void *dest, unsigned char value);
+unsigned char *__fastcall__ xram_peek(void *src);
 
 // Overlay RAM memcopy. To make use of RAM normally under ROM ($C000-$FFFF)
-void __fastcall__ enable_overlay_ram (void);
-void __fastcall__ disable_overlay_ram (void);
+void __fastcall__ enable_overlay_ram(void);
+void __fastcall__ disable_overlay_ram(void);
 
 #endif /* _LOCI_H */
