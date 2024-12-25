@@ -9,12 +9,14 @@
 # Thanks to Iss for pointers for this Makefile:
 # https://forum.defence-force.org/viewtopic.php?p=25411#p25411
 
-## Paths
-# Path tp OSDK install. Edit for local dir
+## Paths - xahmols' defaults, but can be overridden by passing in the relevant ENV var
+#
+# Path to OSDK install. pass in, i.e. "OSDK=/osdk make" to override this default
 # Installation instructions for Linux: #https://forum.defence-force.org/viewtopic.php?p=25396#p25396
-OSDK := /home/xahmol/OSDK-build/pc/tools/osdk/main/osdk-linux/bin/
-# Emulator path: edit for location of emulator to use
-EMUL_DIR := /home/xahmol/oricutron/
+# for MacOS: set up in WINE and pass in OSDK=~/.wine/drive_c/OSDK/
+OSDK ?= /home/xahmol/OSDK-build/pc/tools/osdk/main/osdk-linux/bin/
+# Emulator path: edit for location of emulator to use - pass in EMUL_DIR= to override
+EMUL_DIR ?= /home/xahmol/oricutron/
 # Makefile full path
 mkfile_path := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
@@ -56,6 +58,9 @@ CC        = $(CC65_HOME)/bin/cl65
 AR        = $(CC65_HOME)/bin/ar65
 CP        = cp -f
 
+# the location of the shared machine .lib re-distributables from cc65, pass-in override
+CC65_HOME_SHARE ?= $(CC65_HOME)/share/cc65
+
 ## Compiler and linker flags
 CC65_TARGET = atmos
 CFLAGS  = -t $(CC65_TARGET) -Oirs --debug-info -I include --asm-include-dir asminc -I asminc
@@ -85,9 +90,10 @@ else
 	$(CC) -c $(CFLAGS) -o $@ $<
 endif
 
-# Buold librarry
+# Build archive library including atmos.lib
 $(LIBRARY): $(LSOURCES:.c=.o) $(LASOURCES:.s=.o)
-	$(CP) $(CC65_HOME)/lib/$(CC65_TARGET).lib $(LIBRARY)
+	mkdir -p lib/
+	$(CP) $(CC65_HOME_SHARE)/lib/$(CC65_TARGET).lib $(LIBRARY)
 	$(AR) a $(LIBRARY) $(LSOURCES:.c=.o) $(LASOURCES:.s=.o)
 
 # Link compiled objects 
