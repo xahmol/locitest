@@ -124,9 +124,10 @@ void main()
     memset(&buffer2,0,80);
 
     cprintf("Copy to overlay RAM $C000.\n\r");
-    overlay_memcpy((void*)0xC000, &buffer, 80);
-    cprintf("Reading from overlay RAM.\n\r");
-    overlay_memcpy(&buffer2, (void*)0xC000, 80);
+    enable_overlay_ram();
+    memcpy((void*)0xC000, &buffer, 80);
+    memcpy(&buffer2, (void*)0xC000, 80);
+    disable_overlay_ram();
     cprintf("Printing read numbers:\n\r");
     for (i = 0; i < 80; i++)
     {

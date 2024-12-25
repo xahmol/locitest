@@ -1,3 +1,12 @@
+; LOCI API CC65 library
+; LOCI XRAM memcopy functions
+;
+; Based on:
+; - LOCI ROM by Sodiumlightbaby, 2024, https://github.com/sodiumlb/loci-rom
+; - Picocomputer 6502 by Rumbledethumps, 2023, https://github.com/picocomputer/rp6502
+;
+; Apapted and extended by Xander Mol, 2024
+
 .include "loci.inc"
 
         .export         _xram_memcpy_to, _xram_memcpy_from
@@ -8,8 +17,13 @@
 
 ; void* __fastcall__ xram_memcpy_to (void* dest, const void* src, size_t count);
 ; ----------------------------------------------------------------------
+; Function to copy data from RAM to XRAM
+; ----------------------------------------------------------------------
+; Input:
+;       dest            --> Destination in XRAM
+;       src             --> Source in RAM
+;       count           --> Number of bytes to copy
 ; Get the parameters from stack as follows:
-;
 ;       size            --> ptr3
 ;       src             --> ptr1
 ;       dest            --> ptr2
@@ -50,8 +64,13 @@ mctd:   jmp     popax                   ; Pop ptr and return as result
 
 ; void* __fastcall__ xram_memcpy_from (void* dest, const void* src, size_t count);
 ; ----------------------------------------------------------------------
+; Function to copy data from XRAM to RAM
+; ----------------------------------------------------------------------
+; Input:
+;       dest            --> Destination in RAM
+;       src             --> Source in XRAM
+;       count           --> Number of bytes to copy
 ; Get the parameters from stack as follows:
-;
 ;       size            --> ptr3
 ;       src             --> ptr1
 ;       dest            --> ptr2

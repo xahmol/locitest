@@ -1,55 +1,42 @@
-        .export         _overlay_memcpy
-        .import         popax, memcpy_getparams
-        .importzp       ptr1, ptr2, ptr3
+; LOCI API CC65 library
+; Overlay RAM functions
+;
+; Based on:
+; - LOCI ROM by Sodiumlightbaby, 2024, https://github.com/sodiumlb/loci-rom
+; - Picocomputer 6502 by Rumbledethumps, 2023, https://github.com/picocomputer/rp6502
+;
+; Apapted and extended by Xander Mol, 2024
+        
+        
+        .export         _enable_overlay_ram, _disable_overlay_ram
 
         MICRODISCCFG    := $0314
 
 .code
 
-; void* __fastcall__ _overlay_memcpy (void* dest, const void* src, size_t count);
+; void __fastcall__ _enable_overlay_ram (void);
 ; ----------------------------------------------------------------------
-; Get the parameters from stack as follows:
-;
-;       size            --> ptr3
-;       src             --> ptr1
-;       dest            --> ptr2
-;       First argument (dest) will remain on stack and is returned in a/x!
-_overlay_memcpy:
-        jsr     memcpy_getparams        ; Get parameters from stack
-
-        ; Enable overlay RAM and disable interrupts
-        php                             ; Push processor status
+; Function to enable overlay RAM
+; ----------------------------------------------------------------------
+; NB:
+; This function disables interrupts and disables Oric ROM
+; Only ROM safe functions can be called until overlay RAM is disabled again
+; ----------------------------------------------------------------------
+_enable_overlay_ram:
         sei                             ; Disable interrupts
         lda      #%11111101             ; Enable overlay RAM
         sta      MICRODISCCFG           ; Write to register
-
-        ldx     ptr3+1                  ; Get high byte of size
-        beq     mct2                    ; Jump if zero
-
-mct1:   .repeat 2                       ; Unroll this a bit to make it faster...
-        lda     (ptr1),Y                ; Read a byte
-        sta     (ptr2),Y                ; Copy to destination
-        iny                             ; Increase loop counter
-        .endrepeat
-        bne     mct1                    ; End of page?
-        inc     ptr1+1                  ; Increase high byte of source
-        inc     ptr2+1                  ; Increase high byte of destination        
-        dex                             ; Next 256 byte block
-        bne     mct1                    ; Repeat if any
-
-mct2:   ldx     ptr3                    ; Get the low byte of count
-        beq     mctd                    ; something to copy?
-
-mct3:   lda     (ptr1),Y                ; Read a byte
-        sta     (ptr2),Y                ; Copy to destination
-        iny                             ; Increase loop counter
-        dex                             ; Decrease bytes left counter
-        bne     mct3                    ; Loop until done
-
-        ; Disable overlay RAM and enable interrupts
-        lda      #%11111111
-        sta      MICRODISCCFG
-        plp
         rts
 
-mctd:   jmp     popax                   ; Pop ptr and return as result
+; void __fastcall__ disable_overlay_ram (void);
+; ----------------------------------------------------------------------
+; Function to disable overlay RAM
+; ----------------------------------------------------------------------
+; NB:
+; Only call after prior call to _enable_overlay_ram
+; ----------------------------------------------------------------------
+_disable_overlay_ram:
+        lda      #%11111111             ; Disable overlay RAM
+        sta      MICRODISCCFG           ; Write to register
+        cli                             ; Enable interrupts
+        rts

@@ -314,6 +314,7 @@ void* __fastcall__ xram_memcpy_to (void* dest, const void* src, size_t count);
 void* __fastcall__ xram_memcpy_from (void* dest, const void* src, size_t count);
 
 // Overlay RAM memcopy. To make use of RAM normally under ROM ($C000-$FFFF)
-void* __fastcall__ overlay_memcpy (void* dest, const void* src, size_t count);
+void __fastcall__ enable_overlay_ram (void);
+void __fastcall__ disable_overlay_ram (void);
 
 #endif /* _LOCI_H */
